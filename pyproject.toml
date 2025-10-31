@@ -1,5 +1,5 @@
 [project]
-name = "project-name"
+name = "songasr"
 dynamic = ["version"]
 description = "A modern Python project template optimized for Claude Code with strict guardrails"
 readme = "README.md"
@@ -20,7 +20,7 @@ source = "vcs"
 
 [tool.hatch.build.targets.wheel]
 # TODO: 実際のプロジェクトでは "src/your_package_name" に更新してください
-packages = ["src/project_name"]  # テンプレート用の空パッケージ
+packages = ["src/songasr"]  # テンプレート用の空パッケージ
 
 [tool.ruff]
 line-length = 88
