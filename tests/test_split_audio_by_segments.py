@@ -104,8 +104,12 @@ class TestSplitAudioBySegments:
 
         segments = [
             {"start": 0.0, "end": 1.0, "text": "Short segment"},  # +1秒で2.0秒
-            {"start": 1.5, "end": 3.0, "text": "Next segment"},   # 次の開始が1.5秒なので1.5秒まで
-            {"start": 5.0, "end": 7.0, "text": "Last segment"},   # +1秒で8.0秒
+            {
+                "start": 1.5,
+                "end": 3.0,
+                "text": "Next segment",
+            },  # 次の開始が1.5秒なので1.5秒まで
+            {"start": 5.0, "end": 7.0, "text": "Last segment"},  # +1秒で8.0秒
         ]
 
         # テスト実行
@@ -161,7 +165,8 @@ class TestMainScript:
             ],
             capture_output=True,
             text=True,
-            cwd=Path.cwd(), check=False,
+            cwd=Path.cwd(),
+            check=False,
         )
 
         # 検証
@@ -175,7 +180,8 @@ class TestMainScript:
             ["uv", "run", "scripts/split_audio_by_segments.py", "--invalid-arg"],
             capture_output=True,
             text=True,
-            cwd=Path.cwd(), check=False,
+            cwd=Path.cwd(),
+            check=False,
         )
 
         assert result.returncode != 0
