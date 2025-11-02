@@ -120,7 +120,7 @@ def split_audio_by_segments(
             # 時間をサンプル数に変換
             start_sample = int(start_time * sample_rate)
             end_sample = int(adjusted_end_time * sample_rate)
-            
+
             # 音声の範囲をチェック
             start_sample = max(0, start_sample)
             end_sample = min(len(audio_data), end_sample)
@@ -133,7 +133,7 @@ def split_audio_by_segments(
             segment_audio = audio_data[start_sample:end_sample]
 
             # WAVファイルとして保存
-            sf.write(str(output_path), segment_audio, sample_rate, subtype='PCM_16')
+            sf.write(str(output_path), segment_audio, sample_rate, subtype="PCM_16")
 
             logger.info(
                 f"Created segment {i + 1}/{len(segments)}: {output_filename} "
@@ -191,6 +191,7 @@ def main() -> int:
 
     # 音声を分割
     split_audio_by_segments(args.wav_file, segments, args.output_dir)
+
 
 if __name__ == "__main__":
     main()

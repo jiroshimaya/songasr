@@ -7,8 +7,9 @@
 
 import logging
 from pathlib import Path
-import requests
+
 import librosa
+import requests
 import soundfile as sf
 
 logging.basicConfig(level=logging.INFO)
@@ -23,30 +24,30 @@ def download_sample_song() -> None:
     """ffmpegを使わずに純Pythonでサンプル楽曲をダウンロードしてWAV形式に変換する"""
     # ディレクトリを作成
     OUT_MP3.parent.mkdir(exist_ok=True)
-    
+
     # 1. ダウンロード
     logger.info(f"Downloading from {URL}")
-    response = requests.get(URL, stream=True)
+    response = requests.get(URL, stream=True, timeout=30)
     response.raise_for_status()
-    
-    with open(OUT_MP3, "wb") as f:
+
+    with OUT_MP3.open("wb") as f:
         for chunk in response.iter_content(chunk_size=8192):
             f.write(chunk)
-    
+
     logger.info(f"Downloaded: {OUT_MP3}")
-    
+
     # 2. librosaで音声ファイルを読み込み（自動的にモノラル変換）
     logger.info("Converting to 16kHz mono WAV")
-    
+
     # librosaはMP3をnumpyのndarrayとして読み込む（自動的にモノラル化）
     # sr=16000で16kHzにリサンプリング
     audio_data, sample_rate = librosa.load(OUT_MP3, sr=16000, mono=True)
-    
+
     logger.info(f"Loaded audio: shape={audio_data.shape}, sr={sample_rate}")
-    
+
     # 3. soundfileでWAVとして保存
-    sf.write(OUT_WAV, audio_data, sample_rate, subtype='PCM_16')
-    
+    sf.write(OUT_WAV, audio_data, sample_rate, subtype="PCM_16")
+
     logger.info(f"変換完了: {OUT_WAV}")
 
 
