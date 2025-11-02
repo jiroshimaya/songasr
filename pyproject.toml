@@ -10,10 +10,12 @@ dependencies = [
     "rich>=13.7.0", # structlogのカラフルなコンソール出力用
     "pydantic>=2.11.7",
     "faster-whisper>=1.2.1",
-    "pydub>=0.25.1",
     "requests>=2.32.4",
     "librosa>=0.11.0",
     "soundfile>=0.13.1",
+    "pyopenjtalk-plus>=0.4.1.post4",
+    "torch>=2.9.0",
+    "transformers>=4.57.1",
 ]
 
 [build-system]
