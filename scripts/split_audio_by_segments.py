@@ -149,7 +149,7 @@ def split_audio_by_segments(
     logger.info(f"Audio splitting completed. Output files saved to: {output_dir}")
 
 
-def main() -> int:
+def main():
     """メイン関数"""
     parser = argparse.ArgumentParser(
         description="音声ファイルをWhisperの文字起こし結果のセグメントに基づいて分割する",
