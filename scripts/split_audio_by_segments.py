@@ -12,11 +12,11 @@
 import argparse
 import json
 import logging
-import sys
 from pathlib import Path
 from typing import Any
 
-from pydub import AudioSegment
+import librosa
+import soundfile as sf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -84,11 +84,14 @@ def split_audio_by_segments(
     output_dir.mkdir(parents=True, exist_ok=True)
     logger.info(f"Created output directory: {output_dir}")
 
-    # 音声ファイルを読み込み
+    # 音声ファイルを読み込み（librosaで自動的にモノラル変換）
     try:
-        audio = AudioSegment.from_file(str(wav_file))
+        audio_data, sample_rate = librosa.load(str(wav_file), sr=None, mono=True)
+        duration_seconds = len(audio_data) / sample_rate
         logger.info(
-            f"Loaded audio file: {wav_file} (duration: {len(audio) / 1000:.2f}s)"
+            f"Loaded audio file: {wav_file} "
+            f"(duration: {duration_seconds:.2f}s, sr: {sample_rate}Hz, "
+            f"shape: {audio_data.shape})"
         )
     except Exception as e:
         raise Exception(f"Failed to load audio file: {e}") from e
@@ -114,20 +117,29 @@ def split_audio_by_segments(
         output_path = output_dir / output_filename
 
         try:
-            # 時間をミリ秒に変換
-            start_ms = int(start_time * 1000)
-            end_ms = int(adjusted_end_time * 1000)
+            # 時間をサンプル数に変換
+            start_sample = int(start_time * sample_rate)
+            end_sample = int(adjusted_end_time * sample_rate)
+            
+            # 音声の範囲をチェック
+            start_sample = max(0, start_sample)
+            end_sample = min(len(audio_data), end_sample)
+
+            if start_sample >= end_sample:
+                logger.warning(f"Skipping segment {i + 1}: invalid time range")
+                continue
 
             # 音声セグメントを抽出
-            segment_audio = audio[start_ms:end_ms]
+            segment_audio = audio_data[start_sample:end_sample]
 
             # WAVファイルとして保存
-            segment_audio.export(str(output_path), format="wav")
+            sf.write(str(output_path), segment_audio, sample_rate, subtype='PCM_16')
 
             logger.info(
                 f"Created segment {i + 1}/{len(segments)}: {output_filename} "
                 f"(original: {original_end_time:.2f}s "
-                f"→ adjusted: {adjusted_end_time:.2f}s)"
+                f"→ adjusted: {adjusted_end_time:.2f}s, "
+                f"samples: {len(segment_audio)})"
             )
 
         except Exception as e:
@@ -174,19 +186,11 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    try:
-        # Whisperセグメントを読み込み
-        segments = load_whisper_segments(args.whisper_json)
+    # Whisperセグメントを読み込み
+    segments = load_whisper_segments(args.whisper_json)
 
-        # 音声を分割
-        split_audio_by_segments(args.wav_file, segments, args.output_dir)
-
-    except Exception as e:
-        logger.error(f"Error: {e}")
-        return 1
-
-    return 0
-
+    # 音声を分割
+    split_audio_by_segments(args.wav_file, segments, args.output_dir)
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
