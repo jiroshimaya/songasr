@@ -16,6 +16,7 @@ dependencies = [
     "pyopenjtalk-plus>=0.4.1.post4",
     "torch>=2.9.0",
     "transformers>=4.57.1",
+    "openai-whisper",
 ]
 
 [build-system]
@@ -168,3 +169,6 @@ check-all = """
   uv run pyright $ARGS &&
   uv run pytest $ARGS
 """
+
+[tool.uv.sources]
+openai-whisper = { git = "https://github.com/openai/whisper.git" }
