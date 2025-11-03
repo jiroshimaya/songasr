@@ -32,7 +32,7 @@ def main() -> None:
 
     suppress_tokens = load_suppress_tokens(TOKENS_PATH)
 
-    model = whisper.load_model("large-v2")
+    model = whisper.load_model("medium")
 
     result = model.transcribe(
         str(input_path),
