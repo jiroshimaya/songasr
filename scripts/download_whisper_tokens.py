@@ -2,6 +2,7 @@
 
 whisperにsuppress_tokensとして与えるカナ以外のトークンリストを取得し、保存する
 """
+
 import base64
 import logging
 import re
