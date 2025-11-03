@@ -9,7 +9,9 @@ TOKENS_PATH = Path("local/tokens_to_ignore.txt")
 def load_suppress_tokens(file_path: Path) -> list[int]:
     tokens: list[int] = []
     if not file_path.exists():
-        raise FileNotFoundError(f"suppressトークンファイルが見つかりません: {file_path}")
+        raise FileNotFoundError(
+            f"suppressトークンファイルが見つかりません: {file_path}"
+        )
     for token_str in file_path.read_text(encoding="utf-8").split():
         try:
             tokens.append(int(token_str))
@@ -41,6 +43,7 @@ def main() -> None:
     )
 
     print(result.get("text", ""))
+
 
 if __name__ == "__main__":
     main()

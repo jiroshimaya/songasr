@@ -11,18 +11,17 @@ Whisperの単語単位のタイムスタンプに基づいて音声を分割す�
 """
 
 import argparse
+import json
 import logging
 from pathlib import Path
 from typing import Any
 
-import json
-
 import librosa
 import soundfile as sf
 
-
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def load_whisper_segments(whisper_json_path: Path) -> list[dict[str, Any]]:
     """Whisperの文字起こし結果JSONからセグメント情報を読み込む
@@ -65,6 +64,7 @@ def sanitize_filename(text: str) -> str:
         sanitized = sanitized[:50]
     return sanitized or "segment"
 
+
 def load_whisper_words(whisper_json_path: Path) -> list[dict[str, Any]]:
     """WhisperのJSONから単語情報を抽出する"""
     segments = load_whisper_segments(whisper_json_path)
@@ -83,7 +83,9 @@ def load_whisper_words(whisper_json_path: Path) -> list[dict[str, Any]]:
 
             if start is None or end is None:
                 logger.warning(
-                    "Skipping word without timestamps in segment %d: %s", segment_index + 1, word_info
+                    "Skipping word without timestamps in segment %d: %s",
+                    segment_index + 1,
+                    word_info,
                 )
                 continue
 
@@ -91,7 +93,9 @@ def load_whisper_words(whisper_json_path: Path) -> list[dict[str, Any]]:
             end_f = float(end)
             if start_f >= end_f:
                 logger.warning(
-                    "Skipping word with invalid time range in segment %d: %s", segment_index + 1, word_info
+                    "Skipping word with invalid time range in segment %d: %s",
+                    segment_index + 1,
+                    word_info,
                 )
                 continue
 
@@ -135,7 +139,7 @@ def split_audio_by_words(
             sample_rate,
             audio_data.shape,
         )
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:
         raise Exception(f"Failed to load audio file: {exc}") from exc
 
     for i, word in enumerate(words):
@@ -148,7 +152,11 @@ def split_audio_by_words(
 
         start_time = max(0.0, base_start - safe_padding)
         padded_end_time = min(duration_seconds, adjusted_end_time + safe_padding)
-        end_time = min(padded_end_time, next_start_time) if next_start_time is not None else padded_end_time
+        end_time = (
+            min(padded_end_time, next_start_time)
+            if next_start_time is not None
+            else padded_end_time
+        )
 
         text = word.get("text", "").strip()
 
@@ -159,9 +167,7 @@ def split_audio_by_words(
         segment_index = word["segment_index"] + 1
         sanitized_text_raw = sanitize_filename(text)
         sanitized_text = sanitized_text_raw or f"word_{i + 1}"
-        output_filename = (
-            f"{i + 1:04d}_seg{segment_index:03d}_{start_time:.2f}-{end_time:.2f}_{sanitized_text}.wav"
-        )
+        output_filename = f"{i + 1:04d}_seg{segment_index:03d}_{start_time:.2f}-{end_time:.2f}_{sanitized_text}.wav"
         output_path = output_dir / output_filename
 
         try:
@@ -189,11 +195,13 @@ def split_audio_by_words(
                 adjusted_end_time,
                 len(word_audio),
             )
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:
             logger.error("Failed to create word %d: %s", i + 1, exc)
             continue
 
-    logger.info("Word-level audio splitting completed. Output files saved to: %s", output_dir)
+    logger.info(
+        "Word-level audio splitting completed. Output files saved to: %s", output_dir
+    )
 
 
 def main() -> None:

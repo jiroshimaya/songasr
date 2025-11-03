@@ -162,13 +162,13 @@ clean = """
   rm -rf dist build
 """
 help = "echo '利用可能なタスク: clean, check, help (task [name] で実行)'"
-check-all = """
+check = """
   ARGS="${args:-src tests}"
   uv run ruff format $ARGS &&
   uv run ruff check $ARGS --fix &&
   uv run pyright $ARGS &&
-  uv run pytest $ARGS
+  uv run pytest $ARGS &&
 """
-
+check-all = "uv run pre-commit run --all-files"
 [tool.uv.sources]
 openai-whisper = { git = "https://github.com/openai/whisper.git" }
