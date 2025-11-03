@@ -15,7 +15,7 @@ import re
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-URL = "https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/gpt2.tiktoken"
+URL = "https://raw.githubusercontent.com/openai/whisper/main/whisper/assets/multilingual.tiktoken"
 OUT_TXT = Path("local/multilingual.tiktoken")
 IGNORE_TOKENS_FILE = Path("local/tokens_to_ignore.txt")
 
@@ -37,6 +37,8 @@ def load_tokens(file_path) -> list[tuple[str, int]]:
 def get_non_katakana_or_punctuation_tokens(tokens) -> list[int]:
     non_katakana_or_punctuation_tokens = []
     for token, token_id in tokens:
+        if is_katakana_or_punctuation(token):
+            print(f"Ignore token: '{token}' (ID: {token_id})")
         if not is_katakana_or_punctuation(token):  # カタカナおよび句読点でない場合
             non_katakana_or_punctuation_tokens.append(token_id)
     return non_katakana_or_punctuation_tokens
