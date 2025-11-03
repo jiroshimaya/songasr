@@ -24,9 +24,9 @@ def is_katakana_or_punctuation(text) -> bool:
 
 
 # multilingual.tiktokenファイルを読み込み、デコードしてトークンIDを取得する
-def load_tokens(file_path) -> list[tuple[str, int]]:
+def load_tokens(file_path: Path) -> list[tuple[str, int]]:
     tokens = []
-    with open(file_path, encoding="utf-8") as file:
+    with Path(file_path).open(encoding="utf-8") as file:
         for line in file:
             base64_token, token_id = line.strip().split()
             decoded_token = base64.b64decode(base64_token).decode(
@@ -48,8 +48,8 @@ def get_non_katakana_or_punctuation_tokens(tokens) -> list[int]:
 
 
 # トークンIDをファイルに書き出す
-def save_tokens_to_file(tokens, output_file_path) -> None:
-    with open(output_file_path, "w", encoding="utf-8") as file:
+def save_tokens_to_file(tokens, output_file_path: Path) -> None:
+    with Path(output_file_path).open("w", encoding="utf-8") as file:
         for token_id in tokens:
             file.write(f"{token_id}\n")
 

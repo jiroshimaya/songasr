@@ -167,7 +167,10 @@ def split_audio_by_words(
         segment_index = word["segment_index"] + 1
         sanitized_text_raw = sanitize_filename(text)
         sanitized_text = sanitized_text_raw or f"word_{i + 1}"
-        output_filename = f"{i + 1:04d}_seg{segment_index:03d}_{start_time:.2f}-{end_time:.2f}_{sanitized_text}.wav"
+        time_range = f"{start_time:.2f}-{end_time:.2f}"
+        output_filename = (
+            f"{i + 1:04d}_seg{segment_index:03d}_{time_range}_{sanitized_text}.wav"
+        )
         output_path = output_dir / output_filename
 
         try:
@@ -185,7 +188,8 @@ def split_audio_by_words(
             sf.write(str(output_path), word_audio, sample_rate, subtype="PCM_16")
 
             logger.info(
-                "Created word %d/%d (segment %d): %s (start: %.2fs, final end: %.2fs, adjusted end: %.2fs, samples: %d)",
+                "Created word %d/%d (segment %d): %s "
+                "(start: %.2fs, final end: %.2fs, adjusted end: %.2fs, samples: %d)",
                 i + 1,
                 len(words),
                 segment_index,
