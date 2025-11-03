@@ -1,9 +1,7 @@
-"""download_sample_song.py
+"""download_whisper_tokens.py
 
-サンプル楽曲をダウンロードしてffmpegを使わずに純PythonでWAV変換するスクリプト
-音源: Pixabay提供のフリー音楽素材
+whisperにsuppress_tokensとして与えるカナ以外のトークンリストを取得し、保存する
 """
-
 import base64
 import logging
 import re
