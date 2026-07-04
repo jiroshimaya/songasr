@@ -17,6 +17,14 @@ dependencies = [
     "torch>=2.9.0",
     "transformers>=4.57.1",
     "openai-whisper",
+    "ipapy>=0.0.9.0",
+    "arpakana>=0.0.3",
+    "kanasim>=0.0.4",
+    "gtts>=2.5.4",
+    "phonemizer>=3.3.0",
+    "demucs>=4.0.1",
+    "torchaudio==2.9.0",
+    "torchcodec>=0.14.0",
 ]
 
 [build-system]
