@@ -1,0 +1,82 @@
+{
+  "song1_moon": {
+    "text": "Under the moon and the quiet sky so clear",
+    "duration_sec": 7.32,
+    "reference_kana": "アンダーザムーンアンドザクワイエットスカイソークリア",
+    "baseline": {
+      "ipa": "ʌ n d ɚ ð ə m uː æ n ð ə k w aɪ ᵻ t s k aɪ s oʊ k l iː",
+      "arpabet": "AH N D ER DH AH M UW AE N DH AH K W AY IH T S K AY S OW K L IY",
+      "kana": "アンダーダムーアンダクワイイッツカイソウクリー",
+      "distance": 43.6452477
+    },
+    "wav2vec2_ja": {
+      "raw": "アンでーだえでこわつかあいそうくい",
+      "kana": "アンデーダエデコワツカアイソークイ",
+      "distance": 96.34746449999999
+    }
+  },
+  "song2_whisper": {
+    "text": "A whisper of hope is all I hold near",
+    "duration_sec": 6.16,
+    "reference_kana": "アウィスパーオブホープイズオールアイホールドニア",
+    "baseline": {
+      "ipa": "ɐ w ɪ s p ɚ ɹ ʌ v h aʊ ɪ s ɑː l aɪ h oː d ə n iː",
+      "arpabet": "AH W IH S P ER R AH V HH AW IH S AA L AY HH OW D AH N IY",
+      "kana": "アウィスパーラヴハウイサライホウダニー",
+      "distance": 83.93072799999999
+    },
+    "wav2vec2_ja": {
+      "raw": "あおいしプがはおえしょうだいほーねげえ",
+      "kana": "アオイシプガワオエショーダイホーネゲエ",
+      "distance": 143.0707195
+    }
+  },
+  "song3_breath": {
+    "text": "Every breath, every word",
+    "duration_sec": 6.34,
+    "reference_kana": "エヴリブレスエヴリワード",
+    "baseline": {
+      "ipa": "ɛ v ɹ i b ɹ eɪ ɛ v ɹ i b ɜː d",
+      "arpabet": "EH V R IY B R EY EH V R IY B ER D",
+      "kana": "エヴリーブレイエヴリーバード",
+      "distance": 22.456853
+    },
+    "wav2vec2_ja": {
+      "raw": "エーヴイープーエーヴイーボん",
+      "kana": "エーヴイープーエーヴイーボン",
+      "distance": 58.886035400000004
+    }
+  },
+  "song4_hands": {
+    "text": "Hands raised high with the hearts in tears",
+    "duration_sec": 5.4200625,
+    "reference_kana": "ハンズレイズドハイウィズザハーツインティアーズ",
+    "baseline": {
+      "ipa": "h æ n z ɹ eɪ z d h aɪ w ɪ ð ɐ x ɑːɹ s ɪ n s i",
+      "arpabet": "HH AE N Z R EY Z D HH AY W IH DH AH S IH N S IY",
+      "kana": "ハンズレイズドハイウィダシンシー",
+      "distance": 55.7826577
+    },
+    "wav2vec2_ja": {
+      "raw": "ヘーズヴェイーカーウトハーせち",
+      "kana": "エーズヴェイーカーウトハーセチ",
+      "distance": 113.13525239999998
+    }
+  },
+  "song5_eternal": {
+    "text": "Oh eternal light, that shines so pure",
+    "duration_sec": 6.5000625,
+    "reference_kana": "オーエターナルライトザットシャインズソーピュア",
+    "baseline": {
+      "ipa": "kh ou5 w i5 s. ɑu5 ɑ5 ts. ai5 tɕ th a5 ɕ iɑ5 s ə5 tɕ y5 w",
+      "arpabet": "W S W",
+      "kana": "ス",
+      "distance": 121.39486529999998
+    },
+    "wav2vec2_ja": {
+      "raw": "かおいやシャーやそひう",
+      "kana": "カオイヤシャーヤソヒウ",
+      "distance": 111.64735529999999
+    }
+  }
+}

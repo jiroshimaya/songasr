@@ -1,0 +1,77 @@
+{
+  "s1_moon": {
+    "text": "Under the moon and the quiet sky so clear",
+    "reference_kana": "アンダーザムーンアンドザクワイエットスカイソークリア",
+    "baseline": {
+      "ipa": "ʌ n d ɚ ð ə m uː n æ n ð ə k w aɪ ᵻ t s k aɪ s oʊ k l ɪ",
+      "arpabet": "AH N D ER DH AH M UW N AE N DH AH K W AY IH T S K AY S OW K L IH",
+      "kana": "アンダーダムーナンダクワイイッツカイソウクリ",
+      "distance": 45.5014293
+    },
+    "wav2vec2_ja": {
+      "raw": "あんじょだムうねんだこワエつかいそうクえる",
+      "kana": "アンジョダムウネンダコワエツカイソークエル",
+      "distance": 79.33589190000001
+    }
+  },
+  "s2_hand": {
+    "text": "I want to hold your hand tonight",
+    "reference_kana": "アイウォントトゥホールドユアハンドトゥナイト",
+    "baseline": {
+      "ipa": "aɪ w ʌ n t ə h oʊ l d j ɔːɹ h æ n d t ə n aɪ t",
+      "arpabet": "AY W AH N T AH HH OW L D Y HH AE N D T AH N AY T",
+      "kana": "アイワンタホウルドハンドタナイトゥ",
+      "distance": 55.3998985
+    },
+    "wav2vec2_ja": {
+      "raw": "あいごんとホうでうへやんちないで",
+      "kana": "アイゴントホウデウエヤンチナイデ",
+      "distance": 97.0341345
+    }
+  },
+  "s3_strike": {
+    "text": "Strike the drums and break the silence now",
+    "reference_kana": "ストライクザドラムズアンドブレイクザサイレンスナウ",
+    "baseline": {
+      "ipa": "s t ɹ aɪ k ð ə d ɹ ʌ m z æ n d b ɹ eɪ k ð ə s aɪ l ə n s n aʊ",
+      "arpabet": "S T R AY K DH AH D R AH M Z AE N D B R EY K DH AH S AY L AH N S N AW",
+      "kana": "ストゥライクダドランザンドブレイクダサイランスナウ",
+      "distance": 46.050495500000004
+    },
+    "wav2vec2_ja": {
+      "raw": "ストイっプジョアムぜんブレイプサイウンつなう",
+      "kana": "ストイップジョアムゼンブレイプサイウンツナウ",
+      "distance": 79.76084139999999
+    }
+  },
+  "s4_contraction": {
+    "text": "I can't believe it's already over",
+    "reference_kana": "アイキャントビリーヴイッツオールレディオーバー",
+    "baseline": {
+      "ipa": "aɪ k æ n t b ᵻ l iː v ɪ t s ɑː l ɹ ɛ d i oʊ v ɚ",
+      "arpabet": "AY K AE N T B IH L IY V IH T S AA L R EH D IY OW V ER",
+      "kana": "アイカントゥビリーヴィッツァルレディーオウヴァー",
+      "distance": 49.691064
+    },
+    "wav2vec2_ja": {
+      "raw": "あいけんぽいーベツおえりようぶ",
+      "kana": "アイケンポイーベツオエリヨーブ",
+      "distance": 86.7065636
+    }
+  },
+  "s5_love": {
+    "text": "Can you feel the love in every heartbeat",
+    "reference_kana": "キャンユーフィールザラヴインエヴリハートビート",
+    "baseline": {
+      "ipa": "k æ n j uː f iː l ð ə l ʌ v ɪ n ɛ v ɹ i h ɑːɹ t b iː t",
+      "arpabet": "K AE N Y UW F IY L DH AH L AH V IH N EH V R IY HH T B IY T",
+      "kana": "カニューフィールダラヴィネヴリートゥビートゥ",
+      "distance": 67.6060184
+    },
+    "wav2vec2_ja": {
+      "raw": "ケニューフィオドワでネぶいはるビい",
+      "kana": "ケニューフィオドワデネブイハルビイ",
+      "distance": 113.2699624
+    }
+  }
+}
