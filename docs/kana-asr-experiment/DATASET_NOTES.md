@@ -40,10 +40,31 @@ TTS音声と実歌唱の差(前回検証で確認したwav2vec2-jaの精度劣�
 前回の検証(#4 検証相当)でTTS音声と実歌唱の間にギャップがあることが分かったため、教師データを実歌唱ベースにできないか調査した。
 
 - **DAMP-VPB (Smule Vocal Performances Balanced)**: Zenodoで公開されている(https://zenodo.org/records/2616690, 24,874件のソロ歌唱)が、**「restricted access」でアクセス申請フォームの提出とSmuleのResearch Data License Agreementへの同意が必要**。申請後の承認プロセスは人間の審査を挟むため、エージェントのセッション内で完結できない**ハードブロッカー**。ユーザー自身が個人アカウントで申請・承認を待つ必要がある。
-- **CSD (Children's Song Dataset, KAIST)**: 英語50曲・韓国語50曲、各2つのキーで歌われたプロ歌手の歌唱データ。MIDI・歌詞(グラフェム/音素レベル)付き。CC BY-NC-SA 4.0、**Zenodo/GitHub経由で申請なしに直接ダウンロード可能**。英語の歌詞付き歌唱データとして今回の用途に合致する。
-- **GTSinger**: 9言語(英語含む)対応の大規模歌唱コーパス。Hugging Face (`GTSinger/GTSinger`など複数ミラー) で**無料・申請なしで直接ダウンロード可能**。TextGridで単語/音素境界、ビブラート・メリスマなどの技法ラベルも付与されており、まさに今回課題になっている現象(メリスマ・ビブラート)がラベル済みなのが強み。
+- ~~CSD (Children's Song Dataset, KAIST)~~ / ~~GTSinger~~: 当初これらを代替候補として挙げたが、**どちらもCC BY-NC-SA 4.0(非商用限定)であることが判明し、撤回**した(issue #2のコメント参照)。ユーザーの前回記事のPixabayトラックと同様、**商用利用可(Pixabayのcontent licenseは商用利用可・クレジット表記不要)**が実歌唱コーパスの必須条件のため、この2つは使えない。
 
-**結論**: DAMP-VPBは今回のようなエージェントセッションでは入手できない(ユーザーによる個別申請が必要)。一方、**CSDとGTSingerは英語歌唱+歌詞付きで即座にダウンロード可能**であり、実歌唱データの入手可否という論点については「取れないわけではない、CSD/GTSingerが現実的な代替」というのが結論。次のステップではこのどちらかを実際に使う想定で進めるのが良さそう。
+### 追加調査: Pixabay Musicから追加トラックを探す試み(ブロックされた)
+
+商用利用可という制約を満たす実歌唱ソースとして、既存のPixabayトラックに加えて追加のPixabay Music楽曲(ボーカル入り・歌詞入りのもの)を探そうとしたが、**pixabay.com自体がCloudflareのbot対策(JSチャレンジ)によってサイト全体で自動アクセスをブロックしている**ことを確認した。
+
+- `curl`(ブラウザ風User-Agent付き)、`WebFetch`のどちらでも `pixabay.com/` 直下から `robots.txt` に至るまで一貫して403(`cf-mitigated: challenge`)。
+- Pixabayの公式API(`pixabay.com/api/docs/`)は画像・動画のみが対象で、音楽(Music)は含まれていない。
+- Web検索(Claude組み込みのWebSearch、別経路でインデックスされたスニペットを取得)経由では、ボーカル入りの候補トラックのタイトル・ページURLをいくつか特定できた(例: [`KI - Song (Pop, Vocals)`](https://pixabay.com/music/pop-ki-song-pop-vocals-378912/)、"Dancing Isn't Asking"、"Apocalypse (1) - Original Lyrics" など)。ただし実際のダウンロード用CDN URL(`cdn.pixabay.com/download/audio/...`)はページ本体からしか取得できず、そのページ自体が上記の理由でエージェントからは開けない。
+- web.archive.org経由での代替取得も試したが、こちらもツールから利用不可/レート制限で失敗。
+
+**結論**: **自動化ツールによるPixabayの新規トラック発掘は、このセッション環境では実行不可能(ハードブロッカー)。** これはDAMP-VPBとは異なる種類のブロッカー(承認待ちではなく、bot対策そのもの)だが、結果として同様に「ユーザー本人の手作業が必要」という結論になる。上記のトラック候補URLは人間が普通にブラウザで開けば(bot判定に引っかからないはず)問題なく開けるはずなので、ユーザー側で目視確認の上ダウンロードしてもらうのが現実的。ボット対策を能動的に回避する手段(UA偽装以上のもの、プロキシ経由など)は意図的に試みていない。
+
+### フォールバック: 既存の1曲内でセグメント数を増やす
+
+新曲の発掘がブロックされたため、方針を「複数曲」から「既存の1曲(Pixabay, 商用利用可, 前回記事でも使用)内でセグメント数を増やす」に切り替えた。前回は代表5区間のみだったが、今回はwhisperの書き起こし全27区間すべてでbaseline / wav2vec2-jaを実行し、kanasimでリファレンスと比較した(`scripts/build_song_corpus.py`)。
+
+| | baseline | wav2vec2-ja |
+|---|---|---|
+| 平均kanasim距離 (有効値のみ) | 88.15 (n=25) | 105.13 (n=24) |
+| 区間ごとの勝敗(距離が小さい方) | **15/27** | 12/27 |
+
+**前回(5区間)の「baselineが一貫して勝つ」という結論は、27区間に増やすと弱まった。** 平均では引き続きbaselineが上回るものの、個々の区間で見るとwav2vec2-jaが勝つケースも12/27(44%)あり、5区間だけでは見えなかった「どちらが良いかは区間による」という実態が見えてきた。
+
+もう一つの発見として、**曲の後半(2番以降)ほど両手法とも認識が大きく崩れる傾向**があった。特に18〜25番目の区間(歌の中盤〜終盤、"Oh eternal light"のサビが2回目に登場する箇所を含む)では、baseline/wav2vec2-jaともに距離100超、時にはbaselineの出力が空になる(25番目)ケースも発生した。同じ歌詞のサビが1回目(10番目, "ス"の1文字)と2回目(22番目, "ツ"の1文字)でどちらも壊滅的に崩れていたのは、前回のボーカル分離検証の結果と合わせて考えると、この特定のフレーズの歌い方(伸ばし方・ピッチ)自体がこのモデル構成にとって鬼門である可能性を裏付けている。
 
 ## 4. ボーカル分離(Demucs)の有効性調査
 
@@ -57,15 +78,17 @@ TTS音声と実歌唱の差(前回検証で確認したwav2vec2-jaの精度劣�
 
 ## 次にやるべき具体的なこと(#2の次の一歩の提案)
 
-1. **CSD (Children's Song Dataset) の英語パートを実際に取得し、疑似ラベル方式(baseline出力)とdocs/kana-asr-experimentで使った手書きリファレンスの両方でざっくり評価してみる。** DAMP-VPBはユーザー本人による申請待ちになるため、まずCSDで手を動かすのが早い。
-2. 疑似ラベル(TTS 120件)とCSD由来の実歌唱データを混ぜて学習データを構成する方針を固める(#3 モデル学習の前提として)。
-3. 音声拡張は「一様なピッチシフト/テンポ変更」だけでなく、GTSingerのTextGridラベル(ビブラート・メリスマの区間情報)を参考に、母音部分だけを狙って伸ばす・ピッチ変調するような、より歌唱に忠実な拡張を検討する。
+1. **商用利用可な実歌唱トラックをユーザー本人に何件か集めてもらう。** Pixabayは自動化ツールからはbot対策でブロックされているため、これはユーザーの手作業が必要。上記で見つけた候補ページ(`KI - Song (Pop, Vocals)`など)を起点に、通常のブラウザで"vocal pop"・"english lyrics"などのタグで探してもらうのが早い。他に商用利用可なボーカル素材サイト(Pixabayと同様の無料音源サイトなど)も候補に入れてよい。
+2. トラックが集まるまでの間は、**既存の1曲・27区間のデータ(`local/song_corpus/results.json`)を「実歌唱の暫定検証セット」として使い、疑似ラベル(TTS 120件)と組み合わせて学習データ構成の設計を先に進める**(#3 モデル学習の前提として)。1曲だけでもbaseline/wav2vec2-jaの傾向(平均では僅差、区間によっては逆転する)は掴めている。
+3. 音声拡張は「一様なピッチシフト/テンポ変更」だけでなく、母音部分だけを狙って伸ばす・ピッチ変調するような、より歌唱に忠実な拡張を検討する(GTSinger自体は非商用ライセンスのため学習データには使えないが、技法ラベルの設計思想は参考にできる)。
 4. ボーカル分離は「前処理として常に使うもの」ではなく、**選択肢の一つとして評価に含める**(分離あり/なしの両方でモデルを評価し、実際に効果があるか確認する)程度の位置づけに留める。
+5. 曲の後半で認識が崩れやすい傾向が見えたので、**学習データも曲の冒頭に偏らないよう、サビ・Bメロなど曲構造の異なる箇所を意識してバランスよく集める**とよさそう。
 
 ## 参考
 
 - [docs/kana-asr-experiment/RESULTS.md](https://github.com/jiroshimaya/songasr/blob/docs/kana-asr-experiment/docs/kana-asr-experiment/RESULTS.md)(branch: `docs/kana-asr-experiment`。このブランチには存在しないので注意)
-- [DAMP-VPB (Zenodo)](https://zenodo.org/records/2616690)
-- [CSD: Children's Song Dataset (KAIST MAC Lab)](https://mac.kaist.ac.kr/resources.html)
-- [GTSinger (Hugging Face)](https://huggingface.co/datasets/GTSinger/GTSinger)
+- [DAMP-VPB (Zenodo)](https://zenodo.org/records/2616690) — 商用利用不可・要申請
+- ~~CSD~~ / ~~GTSinger~~ — CC BY-NC-SA 4.0のため不採用(issue #2コメントで訂正済み)
+- [Pixabay content license summary](https://pixabay.com/service/license-summary/) — 商用利用可・クレジット不要
+- [27区間ぶんの結果 (song_corpus_results.json)](./song_corpus_results.json)
 - [Demucs](https://github.com/facebookresearch/demucs)
