@@ -25,6 +25,9 @@ dependencies = [
     "demucs>=4.0.1",
     "torchaudio==2.9.0",
     "torchcodec>=0.14.0",
+    "peft>=0.19.1",
+    "accelerate>=1.14.0",
+    "jiwer>=4.0.0",
 ]
 
 [build-system]
