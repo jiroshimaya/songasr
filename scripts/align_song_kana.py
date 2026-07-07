@@ -149,6 +149,13 @@ def main() -> None:
 
 
 def _safe_dist(calc: Any, kana: str, ref: str) -> float | None:
+    # kanasim はカナ内の半角スペースで (モーラ, ' ') の遷移コスト参照に失敗し
+    # KeyError を投げる。スペースは音韻情報を持たないため採点前に除去する
+    # (これを怠ると採点不能が多発し、認識崩壊と区別できなくなる)。
+    if kana:
+        kana = re.sub(r"\s+", "", kana)
+    if ref:
+        ref = re.sub(r"\s+", "", ref)
     if not kana or not ref:
         return None
     try:
